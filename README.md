@@ -29,27 +29,40 @@ isolating attack traffic from the internet while allowing communication
 between attacker and target.
 
 [Architecture Diagram]
----
-[Kali Linux]
-      |
-      | Attacks
-      |
-      V
-[Windows 10 Victim]
-      |
-      | Sysmon Logs
-      | Windows Event Logs
-      |
-      V
-[Splunk Enterprise]
-      |
-      | Detections
-      | Dashboards
-      | Alerts
-      |
-      V
-Incident Investigation
----
+```
++---------------------------+
+|   Kali Linux              |
+|   192.168.56.102          |
+|   Tools: nmap, Hydra      |
++---------------------------+
+            |
+            | Host-Only Network
+            | (192.168.56.0/24)
+            |
+            v
++---------------------------+
+|   Windows 10              |
+|   192.168.56.101          |
+|   Sysmon + FileZilla      |
++---------------------------+
+            |
+            | Sysmon Logs
+            | Windows Event Logs
+            | FileZilla Logs
+            |
+            v
++---------------------------+
+|   Splunk Enterprise       |
+|   localhost:8000          |
++---------------------------+
+            |
+            | SPL Queries
+            |
+            v
++---------------------------+
+|   Detections + Dashboard  |
++---------------------------+
+```
 
 ## Tools Used
 
