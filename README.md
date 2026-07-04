@@ -98,10 +98,12 @@ inbound connection attempt. Splunk aggregated these by source IP
 and destination port, revealing the scan pattern.
 
 **Detection SPL:**
+```SPL
 index=main source="WinEventLog:Security" EventCode=5156
 Source_Address="192.168.56.102"
 | stats count by Source_Address, Destination_Port
 | sort -count
+```
 
 **Attack Screenshot:**
 ![Nmap Scan](screenshots/attack1_nmap.png)
@@ -134,10 +136,12 @@ incorrect". Splunk ingested this log file directly and counted
 failures per source IP using regex extraction.
 
 **Detection SPL:**
+```SPL
 index=main sourcetype=filezilla "530 Login incorrect"
 | rex "(?<src_ip>\d+.\d+.\d+.\d+)"
 | stats count by src_ip
 | sort -count
+```
 
 **Attack Screenshot:**
 ![Hydra Brute Force](screenshots/attack2_hydra.png)
@@ -177,10 +181,12 @@ line including the encoded payload. Splunk filtered for the
 EncodedCommand flag.
 
 **Detection SPL:**
+```SPL
 index=main source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
 EventCode=1
 | search CommandLine="EncodedCommand"
 | table _time, CommandLine
+```
 
 **Attack Screenshot:**
 ![PowerShell Attack](screenshots/attack3_powershell.png)
@@ -215,10 +221,12 @@ Sysmon EventCode 1 captured schtasks.exe being executed with
 payload path and privilege level.
 
 **Detection SPL:**
+```SPL
 index=main source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
 EventCode=1
 | search CommandLine="schtasks" AND CommandLine="create"
 | table _time, CommandLine, User
+```
 
 **Attack Screenshot:**
 ![Scheduled Task Attack](screenshots/attack4_cmd.png)
@@ -254,10 +262,12 @@ registry path modified and the value written, giving full
 visibility into what was planted and where.
 
 **Detection SPL:**
+```SPL
 index=main source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
 EventCode=13
 | search TargetObject="CurrentVersion\Run"
 | table _time, Image, TargetObject, Details
+```
 
 **Attack Screenshot:**
 ![Registry Attack](screenshots/attack5_cmd.png)
